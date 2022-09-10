@@ -10,6 +10,18 @@
 <body>
 <h1>
     Links
+    <form method="post" action="/userpage">
+        <br>
+        <input type=text id=link name=link>
+        <input type=submit id=submitbutton>
+        {% csrf_token %}
+    </form>
+
+    {% for link in links %}
+    {{ link.originalLink }}
+    <a href="{{ link.hashLink}}">{{ link.hashLink}}</a>
+    <br>
+    {% endfor %}
 </h1>
 </body>
 </html>

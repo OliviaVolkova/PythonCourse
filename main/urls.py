@@ -5,6 +5,6 @@ urlpatterns = [
     path('', views.index),
     path('registration', views.registration),
     path('authorization', views.authorization),
-    path('userpage', views.userpage)
-
+    path('userpage', views.userpage),
+    path('<str:link>', views.link)
 ]
