@@ -18,10 +18,17 @@
     </form>
 
     {% for link in links %}
-    {{ link.originalLink }}
-    <a href="{{ link.hashLink}}">{{ link.hashLink}}</a>
-    <br>
+        <form method="post" action="{{ link.hashLink }}">
+            {{ link.originalLink }}
+
+            <a href="{{ link.hashLink }}">{{ link.hashLink }}</a>
+            {{ link.count }}
+            <button type="submit">delete</button>
+            <br>
+            {% csrf_token %}
+        </form>
     {% endfor %}
+
 </h1>
 </body>
 </html>

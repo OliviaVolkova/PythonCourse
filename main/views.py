@@ -1,6 +1,6 @@
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 import crypt
@@ -41,20 +41,24 @@ def userpage(request):
         # salt = crypt.mksalt(crypt.METHOD_MD5)
         # print('salt: ' + salt)
         hash = crypt.crypt(links.originalLink)
+        while Links.objects.filter(hashLink = hash).exists():
+            hash = crypt.crypt(links.originalLink)
         links.hashLink = hash
         links.save()
         return redirect('/userpage')
     if request.method == "GET":
-        return render(request, 'main/userpage.html', {'links': Links.objects.all()})
+
+        return render(request, 'main/userpage.html', {'links': Links.objects.all().order_by('count')})
 
 def link(request, link):
     print('link:  ' + link)
+    if request.method == "GET":
+        link2 = Links.objects.get(hashLink=link)
+        link2.count += 1
+        link2.save()
+        red = link2.originalLink
+        return HttpResponseRedirect(red)
     if request.method == "POST":
-        links = Links.objects.all()
-        print(links)
-        for l in links:
-            print(l.hashLink + " " + link)
-            if l.hashLink == link:
-                red = l.originalLink
-                return render(request, red)
+        Links.objects.get(hashLink=link).delete()
+        return redirect('/userpage')
     return render(request, 'main/mainpage.html')
